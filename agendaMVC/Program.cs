@@ -1,7 +1,12 @@
+using agendaMVC.Servicios;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IServicio_API, Servicio_API>();
+
+
 
 var app = builder.Build();
 

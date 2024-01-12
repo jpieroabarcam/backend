@@ -2,20 +2,40 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+using agendaMVC.Servicios;
+
 namespace agendaMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IServicio_API _servicioApi;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IServicio_API servicioApi)
         {
-            _logger = logger;
+            _servicioApi = servicioApi;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> ObtenerAgenda(string codigoUsuario)
         {
-            return View();
+            List<Agenda> agenda = await _servicioApi.ObtenerUsuario(codigoUsuario);
+
+            return View(agenda);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarCambios(Agenda agendaUsuario)
+        {
+            bool respuesta = false;
+            if(!agendaUsuario.usuario.Equals("0"))
+            {
+                respuesta = await _servicioApi.GuardarUsuario(agendaUsuario);
+            }
+
+            if (respuesta)
+            {
+                return RedirectToAction("Index");
+            }
+            else return NoContent();
         }
 
         public IActionResult Privacy()
